@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kends Web OS - Salih Demirhan</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Rajdhani:wght@300;500;700&display=swap" rel="stylesheet">
+    
+    <style>
+        /* --- TEMEL AYARLAR VE SİBER RENKLER --- */
+        :root {
+            --ana-renk: #00d4ff;
+            --arka-plan-filtre: rgba(5, 5, 10, 0.7);
+            --cam: rgba(255, 255, 255, 0.03);
+            --hata: #ff4b2b;
+            --gecis: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        * {
+            margin: 0; padding: 0; box-sizing: border-box;
+            font-family: 'Rajdhani', sans-serif;
+            user-select: none;
+        }
+
+        body {
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: url('https://i.pinimg.com/736x/8e/63/80/8e63804c1ebb278128d7315d14921e73.jpg') no-repeat center center/cover;
+            overflow: hidden;
+            color: white;
+            transition: filter 2s ease; /* Odak modu geçişi */
+        }
+
+        /* Dinamik Arka Plan Karartma Katmanı */
+        body::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: radial-gradient(circle, transparent 20%, #000 150%), var(--arka-plan-filtre);
+            z-index: 1;
+            transition: background 1s ease;
+        }
+
+        /* SİSTEM ÇALIŞIRKEN ODAK MODU */
+        body.odak-modu::before {
+            background: rgba(0, 0, 0, 0.85); /* Süre başlayınca kararır */
+        }
+
+        /* --- SOL ÜST PROFİL --- */
+        .profil-alani {
+            position: absolute; top: 30px; left: 30px;
+            display: flex; align-items: center; gap: 15px;
+            z-index: 100; cursor: pointer; padding: 12px 25px;
+            background: rgba(0, 0, 0, 0.5); border-radius: 50px;
+            border: 1px solid rgba(0, 212, 255, 0.2);
+            transition: var(--gecis);
+            backdrop-filter: blur(10px);
+        }
+
+        .profil-alani:hover {
+            border-color: var(--ana-renk);
+            box-shadow: 0 0 25px var(--ana-renk);
+        }
+
+        .profil-resmi {
+            width: 55px; height: 55px; border-radius: 50%;
+            border: 2px solid var(--ana-renk); object-fit: cover;
+        }
+
+        .isim-etiketi {
+            font-family: 'Orbitron', sans-serif; font-weight: 700;
+            font-size: 1.1rem; color: white; letter-spacing: 1px;
+        }
+
+        .ozel-mesaj {
+            font-size: 0.8rem; color: var(--ana-renk); font-weight: bold;
+            opacity: 0; max-height: 0; transition: var(--gecis); overflow: hidden;
+        }
+
+        .mesaj-acik .ozel-mesaj { opacity: 1; max-height: 50px; margin-top: 4px; }
+
+        /* --- ANA ARA YÜZ --- */
+        .ana-kasa {
+            position: relative; z-index: 2; width: 90%; max-width: 1000px;
+            background: var(--cam); backdrop-filter: blur(30px);
+            border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 50px;
+            padding: 70px; text-align: center;
+            box-shadow: 0 50px 120px rgba(0,0,0,0.7);
+            animation: acilis 1.5s ease-out;
+        }
+
+        @keyframes acilis { from { opacity: 0; transform: scale(0.9); } to { opacity: 1; transform: scale(1); } }
+
+        .baslik {
+            font-family: 'Orbitron', sans-serif; font-size: 3.5rem;
+            color: var(--ana-renk); margin-bottom: 40px; letter-spacing: 10px;
+            text-shadow: 0 0 25px rgba(0, 212, 255, 0.5);
+        }
+
+        .zaman-ekrani {
+            font-size: 10rem; font-weight: 700; margin-bottom: 20px;
+            font-family: 'Orbitron', sans-serif;
+            background: linear-gradient(to bottom, #fff 40%, #555 100%);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            filter: drop-shadow(0 10px 20px rgba(0,0,0,0.5));
+        }
+
+        /* --- İLERLEME ÇUBUĞU --- */
+        .cubuk-cerceve {
+            width: 100%; height: 10px; background: rgba(255,255,255,0.05);
+            border-radius: 20px; margin-bottom: 50px; overflow: hidden;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+
+        #ilerleme-doluluk {
+            width: 0%; height: 100%;
+            background: linear-gradient(90deg, #0055ff, var(--ana-renk));
+            box-shadow: 0 0 20px var(--ana-renk); transition: width 1s linear;
+        }
+
+        /* --- KONTROL MERKEZİ --- */
+        .girdi-kutusu { width: 100%; max-width: 550px; margin: 0 auto 30px; }
+
+        input {
+            width: 100%; background: rgba(0,0,0,0.6); border: 2px solid #222;
+            padding: 22px; border-radius: 18px; color: white;
+            font-size: 1.6rem; text-align: center; outline: none; transition: 0.3s;
+        }
+
+        input:focus { border-color: var(--ana-renk); box-shadow: 0 0 30px rgba(0, 212, 255, 0.2); }
+
+        .buton-grubu { display: flex; gap: 20px; justify-content: center; }
+
+        .ana-buton {
+            background: var(--ana-renk); color: #000; border: none;
+            padding: 20px 60px; border-radius: 18px; font-weight: 800;
+            font-size: 1.3rem; cursor: pointer; transition: 0.3s;
+            letter-spacing: 2px; text-transform: uppercase;
+        }
+
+        .ana-buton:hover { transform: translateY(-5px); box-shadow: 0 10px 30px var(--ana-renk); }
+        .sifirla-buton { background: transparent; border: 2px solid var(--hata); color: var(--hata); }
+        .sifirla-buton:hover { background: var(--hata); color: white; box-shadow: 0 0 30px var(--hata); }
+
+        .alt-bilgi {
+            margin-top: 60px; font-size: 0.9rem; color: rgba(255,255,255,0.2);
+            letter-spacing: 4px; font-weight: bold;
+        }
+        .alt-bilgi span { color: var(--ana-renk); }
+
+    </style>
+</head>
+<body>
+
+    <div class="profil-alani" onclick="mesajiGoster(this)">
+        <img src="https://i.pinimg.com/736x/77/89/be/7789be90b8c766983915e57638037702.jpg" alt="Salih" class="profil-resmi">
+        <div class="profil-bilgi">
+            <div class="isim-etiketi">Salih Demirhan</div>
+            <div class="ozel-mesaj">5 Paralık Domainlere benzemez!</div>
+        </div>
+    </div>
+
+    <div class="ana-kasa">
+        <h1 class="baslik">KENDS WEB OS</h1>
+        <div class="zaman-ekrani" id="ekran">00:00:00</div>
+        
+        <div class="cubuk-cerceve">
+            <div id="ilerleme-doluluk"></div>
+        </div>
+
+        <div class="kontrol-merkezi">
+            <div class="girdi-kutusu">
+                <input type="text" id="kullanici-girdisi" placeholder="Süreyi gir (Örn: 40 30)">
+            </div>
+            <div class="buton-grubu">
+                <button class="ana-buton" onclick="sayaciBaslat()">SİSTEMİ BAŞLAT</button>
+                <button class="ana-buton sifirla-buton" onclick="sayaciSifirla()">SIFIRLA</button>
+            </div>
+        </div>
+
+        <div class="alt-bilgi">
+            SYSTEM ARCHITECT: <span>SALİH DEMİRHAN</span> | KENDS KERNEL v9.5.0
+        </div>
+    </div>
+
+    <script>
+        let zamanlayici;
+        let kalanSure;
+        let toplamSure;
+        const ekranElementi = document.getElementById('ekran');
+        const cubukElementi = document.getElementById('ilerleme-doluluk');
+        const girdiElementi = document.getElementById('kullanici-girdisi');
+
+        function mesajiGoster(element) {
+            element.classList.toggle('mesaj-acik');
+        }
+
+        // --- SESLİ KOMUT MOTORU ---
+        function sesliUyariYap(mesaj) {
+            const ses = new SpeechSynthesisUtterance();
+            ses.text = mesaj;
+            ses.lang = 'tr-TR';
+            ses.rate = 0.9; // Hafif yavaş ve karizmatik
+            ses.pitch = 0.8; // Hafif kalın/robotik ses
+            window.speechSynthesis.speak(ses);
+        }
+
+        function sayaciBaslat() {
+            clearInterval(zamanlayici);
+            window.speechSynthesis.cancel(); // Önceki sesleri sustur
+
+            const metin = girdiElementi.value;
+            const sayilar = metin.match(/\d+/g);
+            
+            if (!sayilar) {
+                alert("Hata: Geçerli bir süre girmelisiniz!");
+                return;
+            }
+
+            let saniye = sayilar.length >= 2 ? (parseInt(sayilar[0]) * 60) + parseInt(sayilar[1]) : parseInt(sayilar[0]) * 60;
+
+            kalanSure = saniye;
+            toplamSure = saniye;
+            
+            document.body.classList.add('odak-modu'); // Arka planı karart
+            ekraniGuncelle();
+            
+            zamanlayici = setInterval(() => {
+                kalanSure--;
+                ekraniGuncelle();
+                ilerlemeyiGuncelle();
+
+                if (kalanSure <= 0) {
+                    clearInterval(zamanlayici);
+                    document.body.classList.remove('odak-modu');
+                    
+                    // SESLİ KOMUT TETİKLENİYOR
+                    sesliUyariYap("Süre doldu Salih, operasyon başarıyla tamamlandı.");
+                    
+                    setTimeout(() => {
+                        alert("GÖREV TAMAMLANDI!\n\nMimar: Salih Demirhan");
+                    }, 500);
+                }
+            }, 1000);
+        }
+
+        function sayaciSifirla() {
+            clearInterval(zamanlayici);
+            document.body.classList.remove('odak-modu');
+            kalanSure = 0;
+            toplamSure = 0;
+            ekraniGuncelle();
+            ilerlemeyiGuncelle();
+            girdiElementi.value = "";
+            window.speechSynthesis.cancel();
+        }
+
+        function ekraniGuncelle() {
+            const sa = Math.floor(kalanSure / 3600);
+            const dk = Math.floor((kalanSure % 3600) / 60);
+            const sn = kalanSure % 60;
+            ekranElementi.innerText = `${String(sa).padStart(2, '0')}:${String(dk).padStart(2, '0')}:${String(sn).padStart(2, '0')}`;
+        }
+
+        function ilerlemeyiGuncelle() {
+            const yuzde = ((toplamSure - kalanSure) / toplamSure) * 100;
+            cubukElementi.style.width = yuzde + "%";
+        }
+
+        girdiElementi.addEventListener('keypress', (e) => { if (e.key === 'Enter') sayaciBaslat(); });
+    </script>
+</body>
+</html>
