@@ -271,5 +271,36 @@
 
         girdiElementi.addEventListener('keypress', (e) => { if (e.key === 'Enter') sayaciBaslat(); });
     </script>
-</body>
-</html>
+<style>
+        /* MOBİL UYUM PAKETİ - KENDS OS */
+        @media (max-width: 768px) {
+            .ana-kasa {
+                width: 95% !important;
+                padding: 30px 15px !important;
+                margin: auto !important;
+            }
+            .zaman-ekrani {
+                font-size: clamp(3rem, 15vw, 5rem) !important;
+            }
+            .baslik {
+                font-size: 1.5rem !important;
+            }
+            input {
+                width: 100% !important;
+                max-width: 100% !important;
+            }
+            .buton-grubu {
+                flex-direction: column !important;
+                gap: 10px !important;
+            }
+            .ana-buton {
+                width: 100% !important;
+                max-width: 100% !important;
+            }
+            .profil-alani {
+                top: 10px !important;
+                left: 10px !important;
+                padding: 8px 12px !important;
+            }
+        }
+    </style>
